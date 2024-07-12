@@ -186,10 +186,10 @@ ssize_t flb_pipe_write_all(int fd, const void *buf, size_t count)
 
 static int cb_resume_coro(struct mk_event* event)
 {
-    struct flb_coro *coro;
-    th = (struct flb_coro *)event->data;
+    struct flb_coro *co;
+    co = (struct flb_coro *)event->data;
     if (coro) {
-        flb_coro_resume(coro);
+        flb_coro_resume(co);
     }
 }
 
