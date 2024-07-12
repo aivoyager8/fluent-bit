@@ -777,6 +777,15 @@ int flb_engine_start(struct flb_config *config)
         return -1;
     }
 
+    // chenhg add begin
+    ret = flb_pipe_set_nonblocking(config->ch_manager[1]);
+    if (ret == -1) {
+        flb_errno();
+        return -1;
+    }
+    // chenhg add end
+
+
     /* Start the Storage engine */
     ret = flb_storage_create(config);
     if (ret == -1) {
