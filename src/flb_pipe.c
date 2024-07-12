@@ -188,7 +188,7 @@ static int cb_resume_coro(struct mk_event* event)
 {
     struct flb_coro *co;
     co = (struct flb_coro *)event->data;
-    if (coro) {
+    if (co) {
         flb_coro_resume(co);
     }
 }
