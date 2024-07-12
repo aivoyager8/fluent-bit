@@ -1002,16 +1002,27 @@ static inline void flb_output_return(int ret, struct flb_coro *co) {
         /* Retrieve the thread instance and prepare pipe channel */
         th_ins = flb_output_thread_instance_get();
         pipe_fd = th_ins->ch_thread_events[1];
+        /* Notify the event loop about our return status */
+        n = flb_pipe_w(pipe_fd, (void *) &val, sizeof(val));
+        if (n == -1) {
+            flb_errno();
+        }
     }
     else {
         pipe_fd = out_flush->o_ins->ch_events[1];
+        n = flb_pipe_write_async(task->config->evl, pipe_fd, (void *) &val, sizeof(val), co); // flb_thread->flb_coro
+        if (n == -1) {
+            flb_errno();
+        }
     }
 
     /* Notify the event loop about our return status */
-    n = flb_pipe_w(pipe_fd, (void *) &val, sizeof(val));
-    if (n == -1) {
-        flb_errno();
-    }
+    // chenhg modify begin
+    // n = flb_pipe_w(pipe_fd, (void *) &val, sizeof(val));
+    // if (n == -1) {
+    //     flb_errno();
+    // }
+    // chenhg modify end
 
     /*
      * Prepare the co-routine to be destroyed: real-destroy happens in the
