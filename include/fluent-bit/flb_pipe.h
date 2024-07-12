@@ -45,8 +45,8 @@ ssize_t flb_pipe_read_all(int fd, void *buf, size_t count);
 ssize_t flb_pipe_write_all(int fd, const void *buf, size_t count);
 
 // chenhg add begin
-struct flb_thread;
-ssize_t flb_pipe_write_async(struct mk_event_loop *loop, int fd, const void *buf, size_t count, struct flb_thread *th);
+struct flb_coro;
+ssize_t flb_pipe_write_async(struct mk_event_loop *loop, int fd, const void *buf, size_t count, struct flb_coro *co);
 // chenhg add end
 
 #endif

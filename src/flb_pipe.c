@@ -184,17 +184,17 @@ ssize_t flb_pipe_write_all(int fd, const void *buf, size_t count)
 
 // chenhg add begin
 
-static int cb_resume_thread(struct mk_event* event)
+static int cb_resume_coro(struct mk_event* event)
 {
-    struct flb_thread *th;
-    th = (struct flb_thread *)event->data;
-    if (th) {
-        flb_thread_resume(th);
+    struct flb_coro *coro;
+    th = (struct flb_coro *)event->data;
+    if (coro) {
+        flb_coro_resume(coro);
     }
 }
 
 /* Writes to a non-blocking pipe yielding if no more bytes can be written */
-ssize_t flb_pipe_write_async(struct mk_event_loop *loop, int fd, const void *buf, size_t count, struct flb_thread *th)
+ssize_t flb_pipe_write_async(struct mk_event_loop *loop, int fd, const void *buf, size_t count, struct flb_coro *co)
 {
     ssize_t bytes;
     size_t total = 0;
@@ -208,7 +208,7 @@ ssize_t flb_pipe_write_async(struct mk_event_loop *loop, int fd, const void *buf
                 return -1;
             }
 
-            MK_EVENT_INIT(&event, fd, th, cb_resume_thread);
+            MK_EVENT_INIT(&event, fd, co, cb_resume_coro);
 
             ret = mk_event_add(loop, fd,
                                FLB_ENGINE_EV_CUSTOM,
@@ -217,7 +217,7 @@ ssize_t flb_pipe_write_async(struct mk_event_loop *loop, int fd, const void *buf
                 return -1;
             }
 
-            flb_thread_yield(th, FLB_FALSE);
+            flb_coro_yield(co, FLB_FALSE);
 
             ret = mk_event_del(loop, &event);
             if (ret == -1) {

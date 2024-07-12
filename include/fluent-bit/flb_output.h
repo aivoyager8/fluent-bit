@@ -1010,7 +1010,7 @@ static inline void flb_output_return(int ret, struct flb_coro *co) {
     }
     else {
         pipe_fd = out_flush->o_ins->ch_events[1];
-        n = flb_pipe_write_async(task->config->evl, pipe_fd, (void *) &val, sizeof(val), th);
+        n = flb_pipe_write_async(task->config->evl, pipe_fd, (void *) &val, sizeof(val), co); // flb_thread->flb_coro
         if (n == -1) {
             flb_errno();
         }
